@@ -15,10 +15,9 @@ const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'dev';
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
-app.use(express.json())
 
-app.use(validateBearerToken)
-app.use(bookmarksRouter)
-app.use(errorHandler)
+app.use(validateBearerToken);
+app.use(bookmarksRouter);
+app.use(errorHandler);
 
 module.exports = app;
