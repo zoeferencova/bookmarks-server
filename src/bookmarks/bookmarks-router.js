@@ -5,6 +5,12 @@ const logger = require('../logger');
 const { bookmarks } = require('../store');
 const bookmarksRouter = express.Router();
 const bodyParser = express.json();
+const { DB_URL } = require('./config')
+
+const db = knex({
+    client: 'pg',
+    connection: DB_URL,
+})
 
 bookmarksRouter
     .route('/bookmarks')
