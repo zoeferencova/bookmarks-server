@@ -2,7 +2,7 @@
   "name": "bookmarks-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "mocha --require test/setup.js",
     "dev": "nodemon src/server.js",
@@ -23,7 +23,6 @@
     "knex": "^0.20.7",
     "morgan": "^1.9.1",
     "pg": "^7.17.1",
-    "postgrator": "^3.11.0",
     "uuid": "^3.3.3",
     "valid-url": "^1.0.9",
     "winston": "^3.2.1"
