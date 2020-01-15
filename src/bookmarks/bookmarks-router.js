@@ -1,8 +1,6 @@
 const express = require('express');
-const uuid = require('uuid/v4');
 const { isWebUri } = require('valid-url')
 const logger = require('../logger');
-const { bookmarks } = require('../store');
 const bookmarksRouter = express.Router();
 const bodyParser = express.json();
 const { DB_URL } = require('../config');
@@ -19,9 +17,8 @@ bookmarksRouter
             
     })
     .post(bodyParser, (req, res) => {
-        const knexInstance = req.app.get('db');
         const { title, url, description, rating } = req.body;
-
+        
         if (!title) {
             logger.error(`Title is required`);
             return res.status(400).send(`Title is required`);
@@ -52,11 +49,17 @@ bookmarksRouter
             return res.status(400).send('Invalid URL')
         }
 
-        const bookmark = { id: uuid(), title, url, description, rating }
-
-        BookmarksService.insertBookmark(knexInstance, bookmark)
-        logger.info(`Bookmark with id ${bookmark.id} created.`)
-        res.status(201).location(`http://localhost:8000/bookmarks/${bookmark.id}`).json(bookmark)
+        const newBookmark = { title, url, description, rating }
+        BookmarksService.insertBookmark(
+            req.app.get('db'),
+            newBookmark
+        )
+            .then(bookmark => {
+                res
+                    .status(201)
+                    .json(bookmark)
+            })
+            .catch(next)
     })
 
 

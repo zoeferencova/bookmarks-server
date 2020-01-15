@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const knex = require('knex');
 const app = require('../src/app');
-const { makeBookmarksArray } = require('./bookmarks.fixtures');
+const { makeBookmarksArray } = require('../src/bookmarks/bookmarks.fixtures');
 
 let db;
 
@@ -50,7 +50,7 @@ describe('GET /bookmarks', () => {
 describe('GET /bookmarks/:bookmark_id', () => {
     context('Given no bookmarks', () => {
         it('responds with 404', () => {
-            const bookmarkId = '123456';
+            const bookmarkId = 123456;
             return supertest(app)
                 .get(`/bookmarks/${bookmarkId}`)
                 .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
@@ -68,12 +68,41 @@ describe('GET /bookmarks/:bookmark_id', () => {
         })
 
         it('GET /bookmarks/:bookmark_id', () => {
-            const bookmarkId = '2';
-            const expectedBookmark = testBookmarks[Number(bookmarkId)-1];
+            const bookmarkId = 2;
+            const expectedBookmark = testBookmarks[bookmarkId-1];
             return supertest(app)
                 .get(`/bookmarks/${expectedBookmark.id}`)
                 .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                 .expect(200, expectedBookmark)
         })
+    })
+})
+
+describe.only(`POST /bookmarks`, () => {
+    it(`creates a bookmark, responding with 201 and the new bookmark`, function() {
+        const newBookmark = {
+            title: 'Test bookmark',
+            url: 'https://www.google.com',
+            description: 'Test description',
+            rating: 4
+        }
+        return supertest(app)
+            .post('/bookmarks')
+            .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+            .send(newBookmark)
+            .expect(201)
+            .expect(res => {
+                expect(res.body.title).to.eql(newBookmark.title)
+                expect(res.body.url).to.eql(newBookmark.url)
+                expect(res.body.description).to.eql(newBookmark.description)
+                expect(res.body.rating).to.eql(newBookmark.rating)
+                expect(res.body).to.have.property('id')
+            })
+            .then(postRes => 
+                supertest(app)
+                    .get(`/bookmarks/${postRes.body.id}`)
+                    .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+                    .expect(postRes.body)
+            )
     })
 })
