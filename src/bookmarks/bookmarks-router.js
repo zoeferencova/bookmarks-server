@@ -39,9 +39,11 @@ bookmarksRouter
             return res.status(400).send(`Rating is required`);
         }
 
-        if (!Number.isInteger(rating) || rating < 0 || rating > 5) {
-            logger.error(`${rating} is an invalid rating. Rating must be an integer between 0 and 5.`)
-            return res.status(400).send(`Rating must be an integer between 0 and 5`)
+        const intRating = Number(rating);
+
+        if (!Number.isInteger(intRating) || intRating < 1 || intRating > 5) {
+            logger.error(`${rating} is an invalid rating. Rating must be an number between 1 and 5.`)
+            return res.status(400).send(`Rating must be a number between 1 and 5`)
         }
 
         if (!isWebUri(url)) {
@@ -57,6 +59,7 @@ bookmarksRouter
             .then(bookmark => {
                 res
                     .status(201)
+                    .location(`/bookmarks/${bookmark.id}`)
                     .json(bookmark)
             })
             

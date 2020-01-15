@@ -84,7 +84,7 @@ describe.only(`POST /bookmarks`, () => {
             title: 'Test bookmark',
             url: 'https://www.google.com',
             description: 'Test description',
-            rating: 4
+            rating: '4'
         }
         return supertest(app)
             .post(`/bookmarks`)
