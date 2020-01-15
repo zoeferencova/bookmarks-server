@@ -59,7 +59,7 @@ bookmarksRouter
                     .status(201)
                     .json(bookmark)
             })
-            .catch(next)
+            
     })
 
 
